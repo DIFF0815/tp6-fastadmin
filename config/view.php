@@ -3,6 +3,8 @@
 // | 模板设置
 // +----------------------------------------------------------------------
 
+use think\facade\Env;
+
 return [
     // 模板引擎类型使用Think
     'type'          => 'Think',
@@ -22,4 +24,11 @@ return [
     'taglib_begin'  => '{',
     // 标签库标签结束标记
     'taglib_end'    => '}',
+
+    // 字符替换
+    'tpl_replace_string' => [
+        '__STATIC__' => Env::get('admin.static_path', '/static'),
+        '__JS__'     => '/static/js',
+    ]
+
 ];

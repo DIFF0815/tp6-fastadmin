@@ -1,9 +1,10 @@
 <?php
 namespace app\admin\controller;
 
-use app\BaseController;
+use app\common\controller\Backend;
+use think\facade\View;
 
-class Index extends BaseController
+class Index extends Backend
 {
     public function index()
     {
@@ -13,5 +14,24 @@ class Index extends BaseController
     public function hello($name = 'ThinkPHP6')
     {
         return 'hello,' . $name. '--'. app('http')->getName();
+    }
+
+    public function login(){
+
+        $config = [
+            'language' => 'ch',
+        ];
+
+        View::assign('config',$config);
+
+        $background = '';
+        View::assign('background',$background);
+
+        return view();
+
+    }
+
+    public function logout(){
+
     }
 }
