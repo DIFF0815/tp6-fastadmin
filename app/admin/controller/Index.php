@@ -2,6 +2,7 @@
 namespace app\admin\controller;
 
 use app\common\controller\Backend;
+use think\facade\Env;
 use think\facade\View;
 
 class Index extends Backend
@@ -18,8 +19,20 @@ class Index extends Backend
 
     public function login(){
 
+        $modulename = app('http')->getName();
+        $controllername = $this->request->controller();
+        $actionname = $this->request->action();
+
         $config = [
-            'language' => 'ch',
+            'site' => [
+                'cdnurl' => Env::get('admin.static_path', '/static'),
+                'version'=> time()
+            ],
+            'modulename'     => $modulename,
+            'controllername' => $controllername,
+            'actionname'     => $actionname,
+            'moduleurl'      => rtrim(url("/{$modulename}", [], false), '/'),
+            'language' => 'zh-cn',
         ];
 
         View::assign('config',$config);

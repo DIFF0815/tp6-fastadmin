@@ -20,6 +20,8 @@
 <![endif]-->
 <script type="text/javascript">
     var require = {
-        config:  {$config|json_encode}
+        config:  {:json_encode($config)}
+        //config:  {}
     };
+    console.log(require);
 </script>
