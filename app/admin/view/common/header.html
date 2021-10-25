@@ -1,9 +1,9 @@
 <!-- Logo -->
 <a href="javascript:;" class="logo">
     <!-- 迷你模式下Logo的大小为50X50 -->
-    <span class="logo-mini">{$site.name|mb_substr=0,4,'utf-8'|mb_strtoupper='utf-8'|htmlentities}</span>
+    <span class="logo-mini">{$config.site.name|mb_substr=0,4,'utf-8'|mb_strtoupper='utf-8'|htmlentities}</span>
     <!-- 普通模式下Logo -->
-    <span class="logo-lg">{$site.name|htmlentities}</span>
+    <span class="logo-lg">{$config.site.name|htmlentities}</span>
 </a>
 
 <!-- 顶部通栏样式 -->
@@ -68,17 +68,17 @@
                 <!-- 账号信息下拉框 -->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <img src="{$admin.avatar|cdnurl|htmlentities}" class="user-image" alt="">
+                        <img src="__STATIC__/assets/img/{$admin.avatar|htmlentities}" class="user-image" alt="">
                         <span class="hidden-xs">{$admin.nickname|htmlentities}</span>
                     </a>
                     <ul class="dropdown-menu">
                         <!-- User image -->
                         <li class="user-header">
-                            <img src="{$admin.avatar|cdnurl|htmlentities}" class="img-circle" alt="">
+                            <img src="__STATIC__/assets/img/{$admin.avatar|htmlentities}" class="img-circle" alt="">
 
                             <p>
                                 {$admin.nickname|htmlentities}
-                                <small>{$admin.logintime|date="Y-m-d H:i:s",###}</small>
+                                <small>{$admin.login_time|date="Y-m-d H:i:s,###"}</small>
                             </p>
                         </li>
                         <li class="user-body">
@@ -112,7 +112,7 @@
         </div>
     </div>
 
-    {if $Think.config.fastadmin.multiplenav}
+    {if $Think.config.admin.multiple_nav}
     <!--第二级菜单,只有在multiplenav开启时才显示-->
     <div id="secondnav">
         <ul class="nav nav-tabs nav-addtabs disable-top-badge" role="tablist">

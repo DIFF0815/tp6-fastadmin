@@ -1,6 +1,24 @@
 # 说明
 
+## 部署
+* 域名指向 /public
+* nginx uri 重写
+  ```shell
+  location / {
+      try_files $uri $uri/ =404;
+      if (!-e $request_filename) {
+      rewrite  ^(.*)$  /index.php?s=/$1  last;
+      break;
+      }
+  }
+  ```
 ## 访问
+### 目录说明
+  * app/admin   后台
+  * app/api   接口
+  * app/index   前台
+  * app/common   公共模块
+
 ### 地址
   * 后台
     域名/admin/index/login
@@ -14,7 +32,7 @@
     引入工具
     composer require jaguarjack/migration-generator:dev-master
 
-    生成文件
+    生成文件(生成的文件目录 /database/migrations/)
     php think migration:generate
 ### 数据库迁移工具
     引入工具（官方的）

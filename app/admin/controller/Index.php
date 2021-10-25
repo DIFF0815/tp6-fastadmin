@@ -1,23 +1,110 @@
 <?php
 namespace app\admin\controller;
 
+use app\admin\validate\LoginValidate;
 use app\common\controller\Backend;
+use think\exception\ValidateException;
 use think\facade\Env;
+use think\facade\Validate;
 use think\facade\View;
+use think\Hook;
 
 class Index extends Backend
 {
-    public function index()
-    {
-        return '<style type="text/css">*{ padding: 0; margin: 0; } div{ padding: 4px 48px;} a{color:#2E5CD5;cursor: pointer;text-decoration: none} a:hover{text-decoration:underline; } body{ background: #fff; font-family: "Century Gothic","Microsoft yahei"; color: #333;font-size:18px;} h1{ font-size: 100px; font-weight: normal; margin-bottom: 12px; } p{ line-height: 1.6em; font-size: 42px }</style><div style="padding: 24px 48px;"> <h1>:) </h1><p> ThinkPHP V' . \think\facade\App::version() . '<br/><span style="font-size:30px;">14载初心不改 - 你值得信赖的PHP框架</span></p><span style="font-size:25px;">[ V6.0 版本由 <a href="https://www.yisu.com/" target="yisu">亿速云</a> 独家赞助发布 ]</span></div><script type="text/javascript" src="https://tajs.qq.com/stats?sId=64890268" charset="UTF-8"></script><script type="text/javascript" src="https://e.topthink.com/Public/static/client.js"></script><think id="ee9b1aa918103c4fc"></think>';
-    }
 
     public function hello($name = 'ThinkPHP6')
     {
         return 'hello,' . $name. '--'. app('http')->getName();
     }
 
+    /**
+     * 后台主页
+     */
+    public function index(){
+
+        //左侧菜单
+        $fixedmenu = $referermenu = [];
+        $menulist = $navlist = '';
+            /*list($menulist, $navlist, $fixedmenu, $referermenu) = $this->auth->getSidebar([
+                'dashboard' => 'hot',
+                'addon'     => ['new', 'red', 'badge'],
+                'auth/rule' => __('Menu'),
+                'general'   => ['new', 'purple'],
+            ], $this->view->site['fixedpage']);*/
+
+        $action = $this->request->request('action');
+        if ($this->request->isPost()) {
+            if ($action == 'refreshmenu') {
+                $this->success('', null, ['menulist' => $menulist, 'navlist' => $navlist]);
+            }
+        }
+        View::assign('menulist', $menulist);
+        View::assign('navlist', $navlist);
+        View::assign('fixedmenu', $fixedmenu);
+        View::assign('referermenu', $referermenu);
+        View::assign('title', __('Home'));
+
+        $config = [
+            'site' => [
+                'name' => '后台',
+                'cdnurl' => Env::get('admin.static_path', '/static'),
+                'version'=> time()
+            ],
+            'language' => 'zh-cn',
+        ];
+        $admin = [
+            'username' => 'admin',
+            'nickname' => 'nickname',
+            'avatar' => config('admin.default_avatar'),
+            'login_time' => 1635153075,
+        ];
+
+        View::assign('config',$config);
+        View::assign('admin',$admin);
+
+        return view();
+    }
+
+    /**
+     * 管理员登陆
+     * @return \think\response\View
+     */
     public function login(){
+
+        $url = $this->request->get('url', 'index/index');
+        /*if ($this->auth->isLogin()) {
+            $this->success(__("你已经登陆，不需要再次登陆"), $url);
+        }*/
+
+
+        if ($this->request->isPost()) {
+            $username = $this->request->post('username');
+            $password = $this->request->post('password');
+            $keeplogin = $this->request->post('keeplogin');
+            $token = $this->request->post('__token__');
+
+            $data = [
+                'username' => $username,
+                'password' => $password,
+                '__token__' => $token,
+            ];
+            if (config('admin.login_captcha')) {
+                $rule['captcha'] = 'require|captcha';
+                $data['captcha'] = $this->request->post('captcha');
+            }
+
+            try {
+                validate(LoginValidate::class)->check($data);
+            }catch (ValidateException $e){
+                $this->error($e->getError(),url(),['token'=>$this->request->buildToken()]);
+            }
+
+            $this->success(__('Login successful'), $url, ['url' => $url, 'id' => 1, 'username' => $username, 'avatar' => 1]);
+
+
+        }
+
+
 
         $modulename = app('http')->getName();
         $controllername = $this->request->controller();
@@ -37,14 +124,26 @@ class Index extends Backend
 
         View::assign('config',$config);
 
-        $background = '';
+        $background = config('admin.login_background');
         View::assign('background',$background);
 
         return view();
 
     }
 
-    public function logout(){
 
+    /**
+     * 退出登录
+     */
+    public function logout()
+    {
+        if ($this->request->isPost()) {
+            $this->auth->logout();
+            $this->success(__('Logout successful'), 'index/login');
+        }
+        $html = "<form id='logout_submit' name='logout_submit' action='' method='post'>" . token() . "<input type='submit' value='ok' style='display:none;'></form>";
+        $html .= "<script>document.forms['logout_submit'].submit();</script>";
+
+        return $html;
     }
 }

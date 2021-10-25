@@ -2,12 +2,9 @@
 
 namespace app\common\controller;
 
-use app\admin\library\Auth;
 use app\BaseController;
-use think\Config;
-use think\Hook;
+use app\common\traits\Jump;
 use think\Lang;
-use think\Loader;
 use think\Model;
 use think\Session;
 use fast\Tree;
@@ -112,7 +109,7 @@ class Backend extends BaseController
     /**
      * 引入后台控制器的traits
      */
-
+    use Jump;
 
     public function _initialize()
     {
@@ -120,6 +117,24 @@ class Backend extends BaseController
 
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

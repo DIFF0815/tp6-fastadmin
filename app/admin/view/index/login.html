@@ -100,6 +100,7 @@
 
                     <form action="" method="post" id="login-form">
                         <div id="errtips" class="hide"></div>
+                        <input type="hidden" name="__token__" value="{:token()}" />
                         <div class="input-group">
                             <div class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></div>
                             <input type="text" class="form-control" id="pd-form-username" placeholder="" name="username" autocomplete="off" value="" data-rule=""/>
@@ -109,18 +110,18 @@
                             <div class="input-group-addon"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></div>
                             <input type="password" class="form-control" id="pd-form-password" placeholder="" name="password" autocomplete="off" value="" data-rule=""/>
                         </div>
-                        {if $Think.config.fastadmin.login_captcha}
+                        {if $Think.config.admin.login_captcha}
                         <div class="input-group">
                             <div class="input-group-addon"><span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span></div>
                             <input type="text" name="captcha" class="form-control" placeholder="" data-rule="" autocomplete="off"/>
                             <span class="input-group-addon" style="padding:0;border:none;cursor:pointer;">
-                                        <img src="" width="100" height="30" onclick=""/>
-                                    </span>
+                                <img src="{:captcha_src()}" alt="captcha" width="100" height="30" onclick="this.src = '{:captcha_src()}' + Math.random();"/>
+                            </span>
                         </div>
                         {/if}
                         <div class="form-group checkbox">
                             <label class="inline" for="keeplogin">
-                                <input type="checkbox" name="keeplogin" id="keeplogin" value="1"/>
+                                <input type="checkbox" name="keeplogin" id="keeplogin" value="1"/> 保持登陆
                             </label>
                         </div>
                         <div class="form-group">
@@ -133,5 +134,7 @@
     </div>
 </div>
 {include file="common/script" /}
+
+<script color="0,0,0" opacity="0.5" count="150" src="__STATIC__/assets/js/other/canvas-nest.js" type="text/javascript" charset="utf-8"></script>
 </body>
 </html>
